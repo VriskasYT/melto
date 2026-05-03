@@ -10,7 +10,7 @@
   <style>
     /* ─── CONFIG ─── Set your Replit app URL here */
     :root {
-      --api: "https://YOUR-APP.replit.app";
+      --api: "https://neural-chat-core--catniti.replit.app/";
       --bg: #0a0a0f;
       --surface: #13131a;
       --surface2: #1c1c28;
@@ -180,7 +180,7 @@
     <a href="#demo" class="nav-link">Демо</a>
     <a href="#api" class="nav-link">API</a>
   </div>
-  <a href="https://YOUR-APP.replit.app" target="_blank" class="nav-btn">Открыть чат →</a>
+  <a href="https://neural-chat-core--catniti.replit.app/" target="_blank" class="nav-btn">Открыть чат →</a>
 </nav>
 
 <!-- ─── HERO ─── -->
@@ -189,7 +189,7 @@
   <h1>ИИ-ассистент<br>нового поколения</h1>
   <p class="hero-sub">Умный чат с веб-поиском, поддержкой русского языка, генерацией кода и открытым API для разработчиков.</p>
   <div class="hero-actions">
-    <a href="https://YOUR-APP.replit.app" target="_blank" class="btn-primary">
+    <a href="https://neural-chat-core--catniti.replit.app/" target="_blank" class="btn-primary">
       ✨ Открыть Melto AI
     </a>
     <a href="#api" class="btn-outline">
@@ -322,7 +322,7 @@
 session_id = str(uuid.uuid4())
 
 <span class="kw">with</span> requests.post(
-    <span class="str">"https://YOUR-APP.replit.app/api/chat/send"</span>,
+    <span class="str">"https://neural-chat-core--catniti.replit.app/api/chat/send"</span>,
     json={<span class="str">"sessionId"</span>: session_id, <span class="str">"message"</span>: <span class="str">"Привет!"</span>},
     stream=<span class="num">True</span>
 ) <span class="kw">as</span> r:
@@ -338,13 +338,13 @@ session_id = str(uuid.uuid4())
         <div class="code-box">
           <button class="copy-btn" onclick="copyCode('tab-openai')">Копировать</button>
 <span class="cm"># Настройка KiloCode / Continue.dev / Open WebUI</span>
-<span class="cm"># Provider: openai  |  apiBase: https://YOUR-APP.replit.app/v1</span>
+<span class="cm"># Provider: openai  |  apiBase: https://neural-chat-core--catniti.replit.app/v1</span>
 
 <span class="kw">from</span> openai <span class="kw">import</span> OpenAI
 
 client = OpenAI(
     api_key=<span class="str">"none"</span>,
-    base_url=<span class="str">"https://YOUR-APP.replit.app/v1"</span>
+    base_url=<span class="str">"https://neural-chat-core--catniti.replit.app/v1"</span>
 )
 
 stream = client.chat.completions.create(
@@ -360,7 +360,7 @@ stream = client.chat.completions.create(
       <div id="tab-curl" style="display:none">
         <div class="code-box">
           <button class="copy-btn" onclick="copyCode('tab-curl')">Копировать</button>
-<span class="kw">curl</span> -X POST https://YOUR-APP.replit.app/api/chat/send \
+<span class="kw">curl</span> -X POST https://neural-chat-core--catniti.replit.app/api/chat/send \
   -H <span class="str">"Content-Type: application/json"</span> \
   -d <span class="str">'{"sessionId":"test-1","message":"Привет!"}'</span> \
   --no-buffer
@@ -368,10 +368,10 @@ stream = client.chat.completions.create(
       </div>
 
       <div style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap">
-        <a href="https://YOUR-APP.replit.app/api/chat/status" target="_blank" class="btn-outline" style="padding:9px 18px;font-size:0.85rem">
+        <a href="https://neural-chat-core--catniti.replit.app/api/chat/status" target="_blank" class="btn-outline" style="padding:9px 18px;font-size:0.85rem">
           GET /api/chat/status ↗
         </a>
-        <a href="https://YOUR-APP.replit.app/api/chat/models" target="_blank" class="btn-outline" style="padding:9px 18px;font-size:0.85rem">
+        <a href="https://neural-chat-core--catniti.replit.app/api/chat/models" target="_blank" class="btn-outline" style="padding:9px 18px;font-size:0.85rem">
           GET /api/chat/models ↗
         </a>
       </div>
@@ -383,7 +383,7 @@ stream = client.chat.completions.create(
 <footer>
   <div class="footer-logo">Melto AI</div>
   <p>ИИ-ассистент нового поколения · Open API · Работает локально</p>
-  <p style="margin-top:8px"><a href="https://YOUR-APP.replit.app">Открыть чат</a> · <a href="https://github.com/VriskasYT/melto">GitHub</a></p>
+  <p style="margin-top:8px"><a href="https://neural-chat-core--catniti.replit.app/">Открыть чат</a> · <a href="https://github.com/VriskasYT/melto">GitHub</a></p>
 </footer>
 
 <script>
