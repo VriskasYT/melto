@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Melto AI — ИИ-ассистент нового поколения</title>
+  <meta name="description" content="Melto AI — умный ИИ-ассистент с веб-поиском, поддержкой русского языка и API для разработчиков." />
+  <meta property="og:title" content="Melto AI" />
+  <meta property="og:description" content="ИИ-ассистент нового поколения с веб-поиском и API." />
+  <style>
+    /* ─── CONFIG ─── Set your Replit app URL here */
+    :root {
+      --api: "https://YOUR-APP.replit.app";
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --surface2: #1c1c28;
+      --border: #2a2a3a;
+      --primary: #00D4FF;
+      --primary2: #0080FF;
+      --fg: #f0f0f5;
+      --muted: #8888a0;
+      --radius: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { opacity: 0.8; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; }
+    .nav-logo-icon { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg,var(--primary),var(--primary2)); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .nav-links { display: flex; gap: 6px; }
+    .nav-link { padding: 7px 16px; border-radius: 10px; font-size: 0.87rem; color: var(--muted); transition: color .2s; }
+    .nav-link:hover { color: var(--fg); }
+    .nav-btn { padding: 8px 18px; border-radius: 10px; background: linear-gradient(135deg,var(--primary),var(--primary2)); color: #000; font-weight: 600; font-size: 0.87rem; transition: opacity .2s; }
+    .nav-btn:hover { opacity: 0.85; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 100px 24px 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before, .hero::after {
+      content: ""; position: absolute; border-radius: 50%; pointer-events: none;
+    }
+    .hero::before {
+      width: 500px; height: 500px; top: 10%; left: 15%;
+      background: radial-gradient(circle, rgba(0,212,255,0.07), transparent 70%);
+    }
+    .hero::after {
+      width: 400px; height: 400px; bottom: 20%; right: 10%;
+      background: radial-gradient(circle, rgba(0,128,255,0.06), transparent 70%);
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 99px; font-size: 0.78rem;
+      border: 1px solid rgba(0,212,255,0.3); background: rgba(0,212,255,0.06);
+      color: var(--primary); margin-bottom: 28px;
+    }
+    .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+    .hero h1 {
+      font-size: clamp(2.4rem, 7vw, 4.5rem); font-weight: 800; line-height: 1.15;
+      background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--primary2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 20px;
+    }
+    .hero-sub { font-size: 1.15rem; color: var(--muted); max-width: 520px; margin: 0 auto 36px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      padding: 14px 30px; border-radius: var(--radius); font-size: 1rem; font-weight: 700;
+      background: linear-gradient(135deg,var(--primary),var(--primary2));
+      color: #000; cursor: pointer; border: none;
+      box-shadow: 0 0 30px rgba(0,212,255,0.35);
+      transition: transform .2s, box-shadow .2s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(0,212,255,0.5); }
+    .btn-outline {
+      padding: 14px 30px; border-radius: var(--radius); font-size: 1rem; font-weight: 600;
+      background: transparent; color: var(--fg); cursor: pointer;
+      border: 1px solid var(--border); transition: all .2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* ─── FEATURES ─── */
+    .section { padding: 80px 24px; max-width: 1100px; margin: 0 auto; }
+    .section-title { font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 12px; }
+    .section-sub { text-align: center; color: var(--muted); margin-bottom: 48px; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+    .feature-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px; transition: border-color .25s, transform .25s;
+    }
+    .feature-card:hover { border-color: rgba(0,212,255,0.3); transform: translateY(-3px); }
+    .feature-icon { font-size: 1.8rem; margin-bottom: 14px; }
+    .feature-title { font-weight: 600; font-size: 1rem; margin-bottom: 8px; }
+    .feature-desc { color: var(--muted); font-size: 0.87rem; }
+
+    /* ─── DEMO CHAT ─── */
+    .demo-wrap {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+      overflow: hidden; max-width: 680px; margin: 0 auto; box-shadow: 0 20px 80px rgba(0,0,0,0.5);
+    }
+    .demo-header {
+      display: flex; align-items: center; gap: 10px; padding: 14px 18px;
+      border-bottom: 1px solid var(--border); background: var(--surface2);
+    }
+    .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .demo-title { font-weight: 600; font-size: 0.9rem; margin-left: 6px; flex: 1; }
+    .demo-status { font-size: 0.75rem; color: #4ade80; }
+    .demo-msgs { padding: 20px; height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; }
+    .msg { display: flex; gap: 10px; animation: fadein .4s ease; }
+    @keyframes fadein { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+    .msg.user { flex-direction: row-reverse; }
+    .msg-avatar { width: 30px; height: 30px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+    .msg.user .msg-avatar { background: rgba(0,212,255,0.2); color: var(--primary); }
+    .msg.ai .msg-avatar { background: rgba(0,128,255,0.15); color: var(--primary2); }
+    .msg-bubble { max-width: 75%; padding: 11px 15px; border-radius: 14px; font-size: 0.87rem; line-height: 1.55; }
+    .msg.user .msg-bubble { background: linear-gradient(135deg, rgba(0,212,255,0.18), rgba(0,128,255,0.15)); border: 1px solid rgba(0,212,255,0.2); text-align: right; }
+    .msg.ai .msg-bubble { background: var(--surface2); border: 1px solid var(--border); }
+    .demo-input-row { display: flex; gap: 10px; padding: 14px 18px; border-top: 1px solid var(--border); }
+    .demo-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; color: var(--fg); font-size: 0.9rem; outline: none; }
+    .demo-input:focus { border-color: rgba(0,212,255,0.5); }
+    .demo-send { padding: 10px 20px; background: linear-gradient(135deg,var(--primary),var(--primary2)); color: #000; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 0.87rem; transition: opacity .2s; }
+    .demo-send:hover { opacity: 0.85; }
+    .demo-send:disabled { opacity: 0.5; cursor: not-allowed; }
+    .typing { display: flex; gap: 4px; align-items: center; }
+    .typing span { width: 6px; height: 6px; background: var(--muted); border-radius: 50%; animation: bounce .8s infinite; }
+    .typing span:nth-child(2) { animation-delay: .15s; }
+    .typing span:nth-child(3) { animation-delay: .3s; }
+    @keyframes bounce { 0%,80%,100%{transform:scale(.8)}40%{transform:scale(1.2)} }
+    .no-api-notice { text-align: center; color: var(--muted); font-size: 0.82rem; padding: 0 18px 14px; }
+
+    /* ─── API SECTION ─── */
+    .api-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px; max-width: 860px; margin: 0 auto; }
+    .api-tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
+    .api-tab { padding: 7px 16px; border-radius: 10px; font-size: 0.85rem; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); transition: all .2s; }
+    .api-tab.active { background: rgba(0,212,255,0.1); border-color: rgba(0,212,255,0.3); color: var(--primary); }
+    .api-tab:hover:not(.active) { color: var(--fg); }
+    .code-box { position: relative; background: #0d0d14; border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.82rem; line-height: 1.7; color: #cdd6f4; overflow-x: auto; }
+    .code-box .kw { color: #89b4fa; }
+    .code-box .str { color: #a6e3a1; }
+    .code-box .num { color: #fab387; }
+    .code-box .cm { color: #6c7086; }
+    .copy-btn { position: absolute; top: 10px; right: 10px; padding: 5px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 0.75rem; cursor: pointer; transition: all .2s; }
+    .copy-btn:hover { color: var(--fg); border-color: var(--primary); }
+
+    /* ─── FOOTER ─── */
+    footer { border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; color: var(--muted); font-size: 0.85rem; }
+    footer .footer-logo { font-size: 1.2rem; font-weight: 700; color: var(--fg); margin-bottom: 8px; }
+
+    @media(max-width:640px) {
+      .hero h1 { font-size: 2.3rem; }
+      .nav-links { display: none; }
+      .demo-msgs { height: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">M</div>
+    Melto AI
+  </div>
+  <div class="nav-links">
+    <a href="#features" class="nav-link">Возможности</a>
+    <a href="#demo" class="nav-link">Демо</a>
+    <a href="#api" class="nav-link">API</a>
+  </div>
+  <a href="https://YOUR-APP.replit.app" target="_blank" class="nav-btn">Открыть чат →</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-badge"><div class="hero-badge-dot"></div> Melto AI v2</div>
+  <h1>ИИ-ассистент<br>нового поколения</h1>
+  <p class="hero-sub">Умный чат с веб-поиском, поддержкой русского языка, генерацией кода и открытым API для разработчиков.</p>
+  <div class="hero-actions">
+    <a href="https://YOUR-APP.replit.app" target="_blank" class="btn-primary">
+      ✨ Открыть Melto AI
+    </a>
+    <a href="#api" class="btn-outline">
+      📄 API документация
+    </a>
+  </div>
+</section>
+
+<!-- ─── FEATURES ─── -->
+<div id="features">
+  <div class="section">
+    <div class="section-title">Возможности</div>
+    <div class="section-sub">Всё, что нужно для умного ИИ-ассистента</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-title">Веб-поиск</div>
+        <div class="feature-desc">Ищет актуальные данные в интернете через DuckDuckGo без API-ключей. Актуальные новости, цены, события.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💻</div>
+        <div class="feature-title">Генерация кода</div>
+        <div class="feature-desc">Пишет чистый HTML/CSS/JS, Python, TypeScript и другие языки. Полные рабочие примеры с комментариями.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🇷🇺</div>
+        <div class="feature-title">Русский язык</div>
+        <div class="feature-desc">Отвечает на языке собеседника. Отличное качество русского и английского без переключений.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📎</div>
+        <div class="feature-title">Файлы и изображения</div>
+        <div class="feature-desc">Принимает любые файлы: код, документы, изображения, аудио. Анализирует содержимое текстовых файлов.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎙️</div>
+        <div class="feature-title">Голосовой ввод</div>
+        <div class="feature-desc">Распознавание речи прямо в браузере — просто нажми на микрофон.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔌</div>
+        <div class="feature-title">Открытый API</div>
+        <div class="feature-desc">REST и OpenAI-совместимый API. Подключай к своим проектам, KiloCode, Continue.dev и другим инструментам.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DEMO CHAT ─── -->
+<div id="demo">
+  <div class="section">
+    <div class="section-title">Попробуй прямо здесь</div>
+    <div class="section-sub">Введи адрес своего Melto AI сервера ниже чтобы подключиться</div>
+    <div style="display:flex;gap:10px;max-width:500px;margin:0 auto 28px;">
+      <input id="apiUrl" type="text" placeholder="https://YOUR-APP.replit.app" value=""
+        style="flex:1;padding:11px 16px;background:#13131a;border:1px solid #2a2a3a;border-radius:12px;color:#f0f0f5;font-size:0.9rem;outline:none"
+        oninput="this.style.borderColor='rgba(0,212,255,0.5)'" />
+      <button onclick="connectApi()" style="padding:11px 20px;background:linear-gradient(135deg,#00D4FF,#0080FF);color:#000;border:none;border-radius:12px;font-weight:700;cursor:pointer">
+        Подключить
+      </button>
+    </div>
+    <div class="demo-wrap">
+      <div class="demo-header">
+        <div class="demo-dot" style="background:#ff5f57"></div>
+        <div class="demo-dot" style="background:#febc2e"></div>
+        <div class="demo-dot" style="background:#28c840"></div>
+        <div class="demo-title">Melto AI</div>
+        <div class="demo-status" id="demoStatus">● не подключено</div>
+      </div>
+      <div class="demo-msgs" id="demoMsgs">
+        <div class="msg ai">
+          <div class="msg-avatar">M</div>
+          <div class="msg-bubble">Привет! Я Melto AI. Введи адрес своего сервера выше и начнём общение.</div>
+        </div>
+      </div>
+      <div class="no-api-notice" id="apiNotice">Требуется Melto AI сервер</div>
+      <div class="demo-input-row">
+        <input class="demo-input" id="demoInput" placeholder="Напиши сообщение..." onkeydown="if(event.key==='Enter')sendDemoMsg()" />
+        <button class="demo-send" id="demoSendBtn" onclick="sendDemoMsg()" disabled>Отправить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── API ─── -->
+<div id="api">
+  <div class="section">
+    <div class="section-title">API для разработчиков</div>
+    <div class="section-sub">Интегрируй Melto AI в свой проект за минуты</div>
+    <div class="api-wrap">
+      <div class="api-tabs">
+        <button class="api-tab active" onclick="switchTab('js')">JavaScript</button>
+        <button class="api-tab" onclick="switchTab('python')">Python</button>
+        <button class="api-tab" onclick="switchTab('openai')">OpenAI-совместимый</button>
+        <button class="api-tab" onclick="switchTab('curl')">cURL</button>
+      </div>
+
+      <div id="tab-js">
+        <div class="code-box">
+          <button class="copy-btn" onclick="copyCode('tab-js')">Копировать</button>
+<span class="cm">// Streaming chat с Melto AI</span>
+<span class="kw">const</span> response = <span class="kw">await</span> fetch(<span class="str">"https://YOUR-APP.replit.app/api/chat/send"</span>, {
+  method: <span class="str">"POST"</span>,
+  headers: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> },
+  body: JSON.stringify({
+    sessionId: crypto.randomUUID(),
+    message: <span class="str">"Напиши функцию на JavaScript"</span>
+  })
+});
+<span class="kw">const</span> reader = response.body.getReader();
+<span class="kw">const</span> dec = <span class="kw">new</span> TextDecoder();
+<span class="kw">while</span> (<span class="num">true</span>) {
+  <span class="kw">const</span> { done, value } = <span class="kw">await</span> reader.read();
+  <span class="kw">if</span> (done) <span class="kw">break</span>;
+  <span class="kw">for</span> (<span class="kw">const</span> line <span class="kw">of</span> dec.decode(value).split(<span class="str">"\n"</span>)) {
+    <span class="kw">if</span> (line.startsWith(<span class="str">"data: "</span>)) {
+      <span class="kw">const</span> d = JSON.parse(line.slice(<span class="num">6</span>));
+      <span class="kw">if</span> (d.chunk) process.stdout.write(d.chunk);
+    }
+  }
+}
+        </div>
+      </div>
+
+      <div id="tab-python" style="display:none">
+        <div class="code-box">
+          <button class="copy-btn" onclick="copyCode('tab-python')">Копировать</button>
+<span class="kw">import</span> requests, json, uuid
+
+session_id = str(uuid.uuid4())
+
+<span class="kw">with</span> requests.post(
+    <span class="str">"https://YOUR-APP.replit.app/api/chat/send"</span>,
+    json={<span class="str">"sessionId"</span>: session_id, <span class="str">"message"</span>: <span class="str">"Привет!"</span>},
+    stream=<span class="num">True</span>
+) <span class="kw">as</span> r:
+    <span class="kw">for</span> line <span class="kw">in</span> r.iter_lines():
+        <span class="kw">if</span> line.startswith(<span class="num">b</span><span class="str">"data: "</span>):
+            d = json.loads(line[<span class="num">6</span>:])
+            <span class="kw">if</span> <span class="str">"chunk"</span> <span class="kw">in</span> d:
+                print(d[<span class="str">"chunk"</span>], end=<span class="str">""</span>, flush=<span class="num">True</span>)
+        </div>
+      </div>
+
+      <div id="tab-openai" style="display:none">
+        <div class="code-box">
+          <button class="copy-btn" onclick="copyCode('tab-openai')">Копировать</button>
+<span class="cm"># Настройка KiloCode / Continue.dev / Open WebUI</span>
+<span class="cm"># Provider: openai  |  apiBase: https://YOUR-APP.replit.app/v1</span>
+
+<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+
+client = OpenAI(
+    api_key=<span class="str">"none"</span>,
+    base_url=<span class="str">"https://YOUR-APP.replit.app/v1"</span>
+)
+
+stream = client.chat.completions.create(
+    model=<span class="str">"melto"</span>,
+    messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"Напиши сортировку пузырьком"</span>}],
+    stream=<span class="num">True</span>
+)
+<span class="kw">for</span> chunk <span class="kw">in</span> stream:
+    print(chunk.choices[<span class="num">0</span>].delta.content <span class="kw">or</span> <span class="str">""</span>, end=<span class="str">""</span>)
+        </div>
+      </div>
+
+      <div id="tab-curl" style="display:none">
+        <div class="code-box">
+          <button class="copy-btn" onclick="copyCode('tab-curl')">Копировать</button>
+<span class="kw">curl</span> -X POST https://YOUR-APP.replit.app/api/chat/send \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"sessionId":"test-1","message":"Привет!"}'</span> \
+  --no-buffer
+        </div>
+      </div>
+
+      <div style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap">
+        <a href="https://YOUR-APP.replit.app/api/chat/status" target="_blank" class="btn-outline" style="padding:9px 18px;font-size:0.85rem">
+          GET /api/chat/status ↗
+        </a>
+        <a href="https://YOUR-APP.replit.app/api/chat/models" target="_blank" class="btn-outline" style="padding:9px 18px;font-size:0.85rem">
+          GET /api/chat/models ↗
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-logo">Melto AI</div>
+  <p>ИИ-ассистент нового поколения · Open API · Работает локально</p>
+  <p style="margin-top:8px"><a href="https://YOUR-APP.replit.app">Открыть чат</a> · <a href="https://github.com/VriskasYT/melto">GitHub</a></p>
+</footer>
+
+<script>
+  /* ─── CONFIG: set your Replit URL ─── */
+  const REPLIT_URL_KEY = "melto_api_url";
+  let API_BASE = localStorage.getItem(REPLIT_URL_KEY) || "";
+  if (API_BASE) document.getElementById("apiUrl").value = API_BASE;
+
+  const SESSION_ID = crypto.randomUUID();
+  let connected = false;
+
+  function connectApi() {
+    const url = document.getElementById("apiUrl").value.trim().replace(/\/$/, "");
+    if (!url) return;
+    API_BASE = url;
+    localStorage.setItem(REPLIT_URL_KEY, url);
+    document.getElementById("demoStatus").textContent = "● проверка...";
+    document.getElementById("demoStatus").style.color = "#fbbf24";
+    fetch(`${API_BASE}/api/chat/status`)
+      .then(r => r.json())
+      .then(d => {
+        if (d.ready) {
+          document.getElementById("demoStatus").textContent = "● подключено";
+          document.getElementById("demoStatus").style.color = "#4ade80";
+          document.getElementById("demoSendBtn").disabled = false;
+          document.getElementById("apiNotice").style.display = "none";
+          connected = true;
+          addMsg("ai", "Подключено! Я Melto AI — готов к работе. Задай любой вопрос!");
+        } else {
+          document.getElementById("demoStatus").textContent = "● не готов (" + (d.state || "loading") + ")";
+          document.getElementById("demoStatus").style.color = "#fbbf24";
+        }
+      })
+      .catch(() => {
+        document.getElementById("demoStatus").textContent = "● ошибка подключения";
+        document.getElementById("demoStatus").style.color = "#f87171";
+      });
+  }
+
+  function addMsg(role, text) {
+    const msgs = document.getElementById("demoMsgs");
+    const div = document.createElement("div");
+    div.className = "msg " + role;
+    div.innerHTML = `<div class="msg-avatar">${role === "user" ? "Я" : "M"}</div><div class="msg-bubble" id="m${Date.now()}">${text}</div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div.querySelector(".msg-bubble");
+  }
+
+  async function sendDemoMsg() {
+    if (!connected) { alert("Сначала подключи сервер!"); return; }
+    const input = document.getElementById("demoInput");
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    document.getElementById("demoSendBtn").disabled = true;
+    addMsg("user", text);
+    const aiEl = addMsg("ai", '<div class="typing"><span></span><span></span><span></span></div>');
+    try {
+      const res = await fetch(`${API_BASE}/api/chat/send`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: SESSION_ID, message: text })
+      });
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      let full = "";
+      aiEl.innerHTML = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const lines = dec.decode(value).split("\n");
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            try {
+              const d = JSON.parse(line.slice(6));
+              if (d.chunk) { full += d.chunk; aiEl.textContent = full; document.getElementById("demoMsgs").scrollTop = 99999; }
+            } catch {}
+          }
+        }
+      }
+    } catch (e) {
+      aiEl.textContent = "Ошибка: " + e.message;
+    }
+    document.getElementById("demoSendBtn").disabled = false;
+    document.getElementById("demoInput").focus();
+  }
+
+  /* ─── API tabs ─── */
+  function switchTab(id) {
+    ["js","python","openai","curl"].forEach(t => {
+      document.getElementById("tab-"+t).style.display = t === id ? "block" : "none";
+      document.querySelectorAll(".api-tab")[["js","python","openai","curl"].indexOf(t)].classList.toggle("active", t === id);
+    });
+  }
+
+  function copyCode(tabId) {
+    const text = document.getElementById(tabId).querySelector(".code-box").innerText.replace("Копировать","").trim();
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById(tabId).querySelector(".copy-btn");
+      btn.textContent = "✓ Скопировано";
+      setTimeout(() => btn.textContent = "Копировать", 1500);
+    });
+  }
+
+  if (API_BASE) connectApi();
+</script>
+</body>
+</html>
